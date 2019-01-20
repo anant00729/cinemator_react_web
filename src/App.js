@@ -1,27 +1,42 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
+import HeaderTh from './components/pages/HeaderTh';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
 import './App.css';
 
+
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: { main: grey[800] }, // Purple and green play nicely together.
+    // secondary: { main: '#11cb5f' }, // This is just green.A700 as hex.
+  },
+  typography: { useNextVariants: true },
+  
+});
+
+
 class App extends Component {
+
+
+  componentWillMount(){
+    console.log('compoent Will Mount')
+  }
+
   render() {
+    console.log('render')
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <MuiThemeProvider theme={theme}>
+        <HeaderTh/>
+      </MuiThemeProvider>
     );
+  }
+
+
+  componentDidMount(){
+    console.log('component Did mount')
   }
 }
 
