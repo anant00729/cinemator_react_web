@@ -20,6 +20,26 @@ import PersonIcon from '@material-ui/icons/Person';
 import AddIcon from '@material-ui/icons/Add';
 import blue from '@material-ui/core/colors/blue';
 
+import { palette } from '@material-ui/system';
+
+
+import 'date-fns';
+import Grid from '@material-ui/core/Grid';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, TimePicker, DatePicker } from 'material-ui-pickers';
+
+
+import {showAll,pickCinema} from '../store.js'
+
+
+const styles_date = {
+  grid: {
+    width: '60%',
+  },
+};
+
+
+
 
 
 
@@ -31,8 +51,29 @@ const styles_d = {
   },
 };
 
+const datePicker =  {
+  color: palette.primary1Color,
+  textColor: palette.alternateTextColor,
+  calendarTextColor: palette.textColor,
+  selectColor: palette.primary2Color,
+  selectTextColor: palette.alternateTextColor,
+  calendarYearBackgroundColor: palette.canvasColor,
+  headerColor: palette.pickerHeaderColor || palette.primary1Color,
+}
+
+
+
+const d_width = {
+  width : '400px'
+}
+
 
 class SimpleDialog extends React.Component {
+
+    state = {
+      cinema_l : pickCinema
+    }
+
     handleClose = () => {
       this.props.onClose(this.props.selectedValue);
     };
@@ -42,40 +83,31 @@ class SimpleDialog extends React.Component {
     };
   
     render() {
+      let { cinema_l } = this.state;
       const { classes, onClose, selectedValue, ...other } = this.props;
+
+      console.log('cinema_l :', cinema_l);
   
       return (
-        <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
-          <DialogTitle id="simple-dialog-title">Set backup account</DialogTitle>
+        <div style={d_width}>
+        <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other} fullWidth={true} maxWidth = {'md'}>
+          <DialogTitle id="simple-dialog-title">Pick Cinema</DialogTitle>
           <div>
             <List>
-              {emails.map(email => (
-                <ListItem button onClick={() => this.handleListItemClick(email)} key={email}>
-                  <ListItemAvatar>
-                    <Avatar className={classes.avatar}>
-                      <PersonIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary={email} />
+              {cinema_l.Cinema.map(c => (
+                <ListItem button onClick={() => this.handleListItemClick(c)} key={c.CinemaID}>
+                  <ListItemText primary={c.CinemaName} secondary={c.Address}/>
                 </ListItem>
               ))}
-              <ListItem button onClick={() => this.handleListItemClick('addAccount')}>
-                <ListItemAvatar>
-                  <Avatar>
-                    <AddIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary="add account" />
-              </ListItem>
             </List>
           </div>
         </Dialog>
+        </div>
       );
     }
   }
   
   SimpleDialog.propTypes = {
-    classes: PropTypes.object.isRequired,
     onClose: PropTypes.func,
     selectedValue: PropTypes.string,
   };
@@ -97,6 +129,10 @@ class MovieDet extends Component{
     state = {
         open: false,
         selectedValue: emails[1],
+        showAll : showAll,
+        c_name : 'Pick Cinema',
+        selectedDate: new Date('2014-08-18T21:11:54'),
+        is_active : false
       };
 
     handleClickOpen = () => {
@@ -109,14 +145,33 @@ class MovieDet extends Component{
     };
 
     handleClose = value => {
-        this.setState({ selectedValue: value, open: false });
+        console.log('value :', value);
+        this.setState({ selectedValue: value, open: false, c_name : value.CinemaName , is_active : true});
     };
 
-    render(){
-        const { classes } = this.props;
-        const { mov }  = this.props.location;
 
-        console.log('mov :', mov);
+    handleDateChange = date => {
+      this.setState({ selectedDate: date });
+    };
+  
+
+    
+
+    render(){
+        const {showAll,c_name,selectedDate, is_active } = this.state;
+        const { classes } = this.props;
+        let { mov }  = this.props.location;
+
+
+        console.log('selectedDate :', selectedDate);
+
+        console.log('styles.datePicker', styles.datePicker)
+
+
+        if(!mov){
+          mov = showAll.shows[0].Movies[0]
+          // mov = showAll.shows[0].Movies[0]
+        }
         return <div className="container">
             <div className="row">
             <div className="col-md-4">
@@ -155,18 +210,29 @@ class MovieDet extends Component{
             </List>
             <div className="container">
                 <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-6 my-3">
                 <Button variant="contained" size="medium" color="primary" className={classes.margin}
                     onClick={this.handleClickOpen}
                 >
-                    Pick Cinema
+                    {c_name}
                 </Button>
                 
                 </div>
                 <div className="col-md-6">
-                <Button variant="contained" size="medium" color="primary" className={classes.margin}>
+                {is_active ? (
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <DatePicker
+                    margin="normal"
+                    label="Date picker"
+                    value={selectedDate}
+                    className="mt-0"
+                    onChange={this.handleDateChange}
+                  />
+                  </MuiPickersUtilsProvider>
+                ) : null}
+                {/* <Button variant="contained" size="medium" color="primary" className={classes.margin}>
                     Pick Date
-                </Button>
+                </Button> */}
           
                 </div>
                 </div>
@@ -174,11 +240,12 @@ class MovieDet extends Component{
 
             </div>
             </div>
-            <PickCinema
+            <SimpleDialogWrapped
             selectedValue={this.state.selectedValue}
             open={this.state.open}
             onClose={this.handleClose}
             />
+
         </div>
     }
 }

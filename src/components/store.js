@@ -356,3 +356,35 @@ export const showAll = {
       }
     ]
   }
+
+
+  export const pickCinema = {
+    Status: true,
+    Message: '',
+    Cinema: [
+      {
+        CinemaID: '1',
+        CinemaName: 'Cinema 1',
+        Address: '18 Finance St, Central, Hong Kong',
+        CityID: '1',
+        CityName: 'Mumbai',
+        ScreenCount: 2,
+        OrganizationName: 'PVR',
+        OrganizationLogo: 'http://gogocinema.binarynumbers.io/assets/images/organization/5c236775a53b0.jpg',
+        Latitude: '23.456',
+        Longitude: '56.789'
+      },
+      {
+        CinemaID: '7',
+        CinemaName: 'Ciname 2',
+        Address: 'Queen Road, Central, Hong Kong',
+        CityID: '1',
+        CityName: 'Mumbai',
+        ScreenCount: 3,
+        OrganizationName: 'PVR',
+        OrganizationLogo: 'http://gogocinema.binarynumbers.io/assets/images/organization/5c236775a53b0.jpg',
+        Latitude: '23.456',
+        Longitude: '56.789'
+      }
+    ]
+  }
